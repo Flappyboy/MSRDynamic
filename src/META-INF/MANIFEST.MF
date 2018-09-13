@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Premain-Class: com.nju.msr.instrument.AopAgentTest
+Class-Path: libs/asm-all-5.2.jar
+
