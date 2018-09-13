@@ -1,5 +1,7 @@
 package com.nju.msr.asm;
 
+import com.nju.msr.Actions;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
@@ -25,7 +27,11 @@ class MethodAdapter extends MethodVisitor implements Opcodes {
 
     @Override
     public void visitCode() {
-        mv.visitMethodInsn(INVOKESTATIC, "com/nju/msr/Actions","methodInvoked","()V",false);
+        mv.visitLdcInsn(className);
+        mv.visitLdcInsn(name);
+        mv.visitLdcInsn(desc);
+
+        mv.visitMethodInsn(INVOKESTATIC, "com/nju/msr/Actions","methodInvoked","(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V",false);
 
         /*mv.visitFieldInsn(GETSTATIC, "java/lang/System", "err", "Ljava/io/PrintStream;");
         mv.visitLdcInsn("CALL classname:"+ className+ " access"+access+" name:" + name +" desc"+desc+" singature:"+signature);
@@ -46,6 +52,12 @@ class MethodAdapter extends MethodVisitor implements Opcodes {
 
         /* TODO: System.err.println("RETURN" + name);  */
     }
+
+    @Override
+    public void visitLineNumber(int i, Label label) {
+        super.visitLineNumber(i, label);
+    }
+
     static void printStack(){
 
     }

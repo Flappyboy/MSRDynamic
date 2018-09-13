@@ -35,4 +35,8 @@ public class MethodPool {
         }
         return method;
     }
+
+    public Method getMethod(String owner, String name, String descriptor){
+        return getMethod(Method.generateId(owner,name, descriptor));
+    }
 }

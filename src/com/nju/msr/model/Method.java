@@ -66,16 +66,17 @@ public class Method {
         return id;
     }
 
-    private static final String splitSign = "%!^";
+    private static final String splitSign = "%!#";
     static public String generateId(String owner, String name, String descriptor){
         if (StringUtils.isAnyBlank(owner,name,descriptor))
             throw new RuntimeException("输入值不能为空");
+        owner.replace('.','/');
         return owner+splitSign+name+splitSign+descriptor;
     }
     static public Map<String, String> resolveId(String id){
         String[] value = id.split(splitSign);
-        if (StringUtils.isAnyBlank())
-            throw new RuntimeException("id值错误");
+        if (StringUtils.isAnyBlank(value)||value.length<3)
+            throw new RuntimeException("id值错误 "+id);
         Map<String, String> result = new HashMap<>();
         result.put("owner",value[0]);
         result.put("name",value[1]);
