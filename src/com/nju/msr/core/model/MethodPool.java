@@ -1,4 +1,4 @@
-package com.nju.msr.model;
+package com.nju.msr.core.model;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +34,10 @@ public class MethodPool {
             }
         }
         return method;
+    }
+
+    public Method getMethod(String owner, String name){
+        return getMethod(Method.generateId(owner,name, ""));
     }
 
     public Method getMethod(String owner, String name, String descriptor){

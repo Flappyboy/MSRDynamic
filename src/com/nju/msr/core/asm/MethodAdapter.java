@@ -1,6 +1,6 @@
-package com.nju.msr.asm;
+package com.nju.msr.core.asm;
 
-import com.nju.msr.Actions;
+import com.nju.msr.core.model.Actions;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -31,13 +31,26 @@ class MethodAdapter extends MethodVisitor implements Opcodes {
         mv.visitLdcInsn(name);
         mv.visitLdcInsn(desc);
 
-        mv.visitMethodInsn(INVOKESTATIC, "com/nju/msr/Actions","methodInvoked","(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V",false);
+        mv.visitMethodInsn(INVOKESTATIC, Actions.path,"methodStart","(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V",false);
 
         /*mv.visitFieldInsn(GETSTATIC, "java/lang/System", "err", "Ljava/io/PrintStream;");
         mv.visitLdcInsn("CALL classname:"+ className+ " access"+access+" name:" + name +" desc"+desc+" singature:"+signature);
         mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);*/
 
         mv.visitCode();
+    }
+
+    @Override
+    public void visitInsn(int opcode) {
+        //TODO 结合ReturnTest内容，对抛出异常情况的退出程序做进一步处理
+
+        if ((opcode >= Opcodes.IRETURN && opcode <= Opcodes.RETURN) || opcode == Opcodes.ATHROW) {
+            mv.visitLdcInsn(className);
+            mv.visitLdcInsn(name);
+            mv.visitLdcInsn(desc);
+            mv.visitMethodInsn(INVOKESTATIC, Actions.path,"methodEnd","(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V",false);
+        }
+        mv.visitInsn(opcode);
     }
 
     @Override
@@ -54,11 +67,7 @@ class MethodAdapter extends MethodVisitor implements Opcodes {
     }
 
     @Override
-    public void visitLineNumber(int i, Label label) {
-        super.visitLineNumber(i, label);
-    }
-
-    static void printStack(){
-
+    public void visitEnd() {
+        mv.visitEnd();
     }
 }

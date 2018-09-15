@@ -1,4 +1,4 @@
-package com.nju.msr.test;
+package com.test.nju.msr.test;
 
 
 public class A{

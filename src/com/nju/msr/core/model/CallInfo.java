@@ -1,9 +1,10 @@
-package com.nju.msr.model;
+package com.nju.msr.core.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CallInfo {
+public class CallInfo implements Serializable {
 
     private Method caller;
 
@@ -11,11 +12,14 @@ public class CallInfo {
 
     private Long startTime;
 
+    /**
+     * 由于无法可靠地保证获得方法结束信息，所以目前这个状态变量是不靠谱，
+     */
     private Long endTime;
 
     private List<CallInfo> childCallList = new ArrayList<>();
 
-    private CallInfo parentCall;
+    private transient CallInfo parentCall;
 
     public void addChildCall(CallInfo callInfo){
         if (callInfo!=null) {
@@ -42,6 +46,9 @@ public class CallInfo {
         return true;
     }
 
+    /**
+     * 由于无法可靠地保证获得方法结束信息，所以endTime是不靠谱，所以这方法是不靠谱的
+     */
     public boolean isFinished(){
         if (endTime!=null)
             return true;
@@ -51,19 +58,7 @@ public class CallInfo {
     public CallInfo(Method caller, Method callee) {
         this.caller = caller;
         this.callee = callee;
-    }
-
-    public CallInfo(Method caller, Method callee, long startTime) {
-        this.caller = caller;
-        this.callee = callee;
-        this.startTime = startTime;
-    }
-
-    public CallInfo(Method caller, Method callee, long startTime, long endTime) {
-        this.caller = caller;
-        this.callee = callee;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startTime = System.currentTimeMillis();
     }
 
     public long getTime(){
@@ -86,15 +81,22 @@ public class CallInfo {
         return startTime;
     }
 
-    public void setStartTime(long startTime) {
-        this.startTime = startTime;
-    }
-
     public long getEndTime() {
         return endTime;
     }
 
     public void setEndTime(long endTime) {
         this.endTime = endTime;
+    }
+
+    @Override
+    public String toString() {
+        return "CallInfo{" +
+                "caller=" + caller +
+                ", callee=" + callee +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", childSize=" + childCallList.size() +
+                '}';
     }
 }

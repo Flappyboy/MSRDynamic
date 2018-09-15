@@ -1,10 +1,11 @@
-package com.nju.msr.model;
+package com.nju.msr.core.model;
 
-import com.nju.msr.utils.StringUtils;
+import com.nju.msr.utils.StringUtil;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Method {
+public class Method implements Serializable {
 
     private String owner;
 
@@ -14,9 +15,9 @@ public class Method {
 
     private String id;
 
-    private Set<Method> childMethodSet = new HashSet<>();
+    private transient Set<Method> childMethodSet = new HashSet<>();
 
-    private Set<Method> parentMethodSet = new HashSet<>();
+    private transient Set<Method> parentMethodSet = new HashSet<>();
 
     public Method(String owner, String name, String descriptor) {
         this.owner = owner;
@@ -68,19 +69,29 @@ public class Method {
 
     private static final String splitSign = "%!#";
     static public String generateId(String owner, String name, String descriptor){
-        if (StringUtils.isAnyBlank(owner,name,descriptor))
+        if (StringUtil.isAnyBlank(owner,name))
             throw new RuntimeException("输入值不能为空");
-        owner.replace('.','/');
+        owner = owner.replace('.','/');
         return owner+splitSign+name+splitSign+descriptor;
     }
     static public Map<String, String> resolveId(String id){
         String[] value = id.split(splitSign);
-        if (StringUtils.isAnyBlank(value)||value.length<3)
+        if (value.length<2||StringUtil.isAnyBlank(value[0],value[1]))
             throw new RuntimeException("id值错误 "+id);
         Map<String, String> result = new HashMap<>();
         result.put("owner",value[0]);
         result.put("name",value[1]);
-        result.put("descriptor",value[2]);
+        if(value.length>=3)
+            result.put("descriptor",value[2]);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Method{" +
+                "owner='" + owner + '\'' +
+                ", name='" + name + '\'' +
+                ", descriptor='" + descriptor + '\'' +
+                '}';
     }
 }

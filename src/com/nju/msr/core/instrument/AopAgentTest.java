@@ -1,4 +1,6 @@
-package com.nju.msr.instrument;
+package com.nju.msr.core.instrument;
+
+import com.nju.msr.core.Param;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
@@ -12,6 +14,7 @@ public class AopAgentTest {
      * then the real application main method will be called.
      **/
     public static void premain(String agentArgs, Instrumentation inst) {
+        Param.packageName=agentArgs.replaceAll("\\.","/").split("&");
         System.out.println("AopAgentTest.premain() was called.");
 
         /* Provides services that allow Java programming language agents to instrument programs running on the JVM.*/
@@ -19,8 +22,6 @@ public class AopAgentTest {
 
         /* ClassFileTransformer : An agent provides an implementation of this interface in order to transform class files.*/
         ClassFileTransformer trans = new AopAgentTransformer();
-
-        System.out.println("Adding a AopAgentTest instance to the JVM.");
 
         /*Registers the supplied transformer.*/
         _inst.addTransformer(trans);

@@ -1,4 +1,4 @@
-package com.nju.msr.model;
+package com.nju.msr.core.model;
 
 import java.util.HashSet;
 import java.util.Set;

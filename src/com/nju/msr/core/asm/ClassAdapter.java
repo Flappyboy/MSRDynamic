@@ -1,4 +1,4 @@
-package com.nju.msr.asm;
+package com.nju.msr.core.asm;
 
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
@@ -24,7 +24,8 @@ public class ClassAdapter extends ClassVisitor implements Opcodes {
     public MethodVisitor visitMethod(final int access, final String name,
                                      final String desc, final String signature, final String[] exceptions) {
         MethodVisitor mv = cv.visitMethod(access, name, desc, signature, exceptions);
-        if (!isInterface && mv != null && !"<init>".equals(name) && !"<clinit>".equals(name)) {
+        //if (!isInterface && mv != null && !"<init>".equals(name) && !"<clinit>".equals(name)) {
+        if (!isInterface && mv != null) {
             mv = new MethodAdapter(mv, owner, access, name, desc, signature, exceptions);
         }
         return mv;
