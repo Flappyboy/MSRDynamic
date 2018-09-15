@@ -26,7 +26,7 @@ public class CallChainManagement {
         return INSTANCE;
     }
 
-    public static CallChain getCurrentCallChain() {
+    private CallChain getCurrentCallChain() {
         CallChain callChain = callChainMap.get(Thread.currentThread().getId());
         if (callChain == null) {
             callChain = new CallChain(Thread.currentThread());
@@ -102,7 +102,7 @@ public class CallChainManagement {
     private synchronized void save(CallChain callChain, long key) {
 //        try {
             String str = key + " " + SerializeUtil.serializeToString(callChain.getRootCall(),0);
-            FileUtil.appendContentToFile("E:/workspace/test/data/CallChain.txt", str);
+            FileUtil.appendContentToFile(Param.saveCallChainInfoFilePath, str);
         /*} catch (IOException e) {
             e.printStackTrace();
         }*/

@@ -1,11 +1,12 @@
 package com.nju.msr.core.model;
 
+import com.nju.msr.core.Constant;
 import com.nju.msr.utils.StringUtil;
 
 import java.io.Serializable;
 import java.util.*;
 
-public class Method implements Serializable {
+public class Method implements Serializable, Constant {
 
     private String owner;
 
@@ -67,15 +68,14 @@ public class Method implements Serializable {
         return id;
     }
 
-    private static final String splitSign = "%!#";
     static public String generateId(String owner, String name, String descriptor){
         if (StringUtil.isAnyBlank(owner,name))
             throw new RuntimeException("输入值不能为空");
         owner = owner.replace('.','/');
-        return owner+splitSign+name+splitSign+descriptor;
+        return owner+methodIdSplitSign+name+methodIdSplitSign+descriptor;
     }
     static public Map<String, String> resolveId(String id){
-        String[] value = id.split(splitSign);
+        String[] value = id.split(methodIdSplitSign);
         if (value.length<2||StringUtil.isAnyBlank(value[0],value[1]))
             throw new RuntimeException("id值错误 "+id);
         Map<String, String> result = new HashMap<>();

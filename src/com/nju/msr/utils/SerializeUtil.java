@@ -1,10 +1,20 @@
 package com.nju.msr.utils;
 
 import com.nju.msr.core.model.CallInfo;
+import com.nju.msr.core.model.MethodRelation;
 
 import java.io.*;
+import java.util.Map;
 
-public class SerializeUtil {
+public class SerializeUtil{
+    public static StringBuilder serializeToString(Map<String, MethodRelation> methodRelationMap){
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Map.Entry<String, MethodRelation> methodRelationEntry : methodRelationMap.entrySet()) {
+            MethodRelation methodRelation = methodRelationEntry.getValue();
+            stringBuilder.append(methodRelation+"\n");
+        }
+        return stringBuilder;
+    }
 
     public static StringBuilder serializeToString(CallInfo callInfo, int level){
         StringBuilder stringBuilder = new StringBuilder();

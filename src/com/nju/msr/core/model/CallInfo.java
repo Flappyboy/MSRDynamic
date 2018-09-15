@@ -5,10 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CallInfo implements Serializable {
+    private MethodRelationManagement methodRelationManagement = MethodRelationManagement.getInstance();
 
-    private Method caller;
-
-    private Method callee;
+    private MethodRelation methodRelation;
 
     private Long startTime;
 
@@ -56,8 +55,7 @@ public class CallInfo implements Serializable {
     }
 
     public CallInfo(Method caller, Method callee) {
-        this.caller = caller;
-        this.callee = callee;
+        this.methodRelation = methodRelationManagement.getMethodRelation(caller,callee);
         this.startTime = System.currentTimeMillis();
     }
 
@@ -70,11 +68,11 @@ public class CallInfo implements Serializable {
     }
 
     public Method getCaller() {
-        return caller;
+        return methodRelation.getCaller();
     }
 
     public Method getCallee() {
-        return callee;
+        return methodRelation.getCallee();
     }
 
     public long getStartTime() {
@@ -92,8 +90,8 @@ public class CallInfo implements Serializable {
     @Override
     public String toString() {
         return "CallInfo{" +
-                "caller=" + caller +
-                ", callee=" + callee +
+                "caller=" + getCaller() +
+                ", callee=" + getCallee() +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
                 ", childSize=" + childCallList.size() +
