@@ -6,19 +6,22 @@ import com.nju.msr.utils.StringUtil;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * 表示一个方法，通过asm可以获得方法的类名、方法名、签名等可以唯一确定一个方法，但通过堆栈只能获得类名方法名，无法确定一个方法。
+ */
 public class Method implements Serializable, Constant {
 
+    //类名
     private String owner;
 
+    //方法名
     private String name;
 
+    //方法的输入输出类型
     private String descriptor;
 
+    //构造出的唯一标识
     private String id;
-
-    private transient Set<Method> childMethodSet = new HashSet<>();
-
-    private transient Set<Method> parentMethodSet = new HashSet<>();
 
     public Method(String owner, String name, String descriptor) {
         this.owner = owner;
@@ -32,23 +35,6 @@ public class Method implements Serializable, Constant {
         this.owner= map.get("owner");
         this.name= map.get("name");
         this.descriptor= map.get("descriptor");
-    }
-
-    public Set<Method> getChildMethodSet() {
-        return childMethodSet;
-    }
-
-    public Set<Method> getParentMethodSet() {
-        return parentMethodSet;
-    }
-
-    public void addChildMethod(Method method){
-        if (method != null)
-            childMethodSet.add(method);
-    }
-    public void addParentMethod(Method method){
-        if (method != null)
-            parentMethodSet.add(method);
     }
 
 
