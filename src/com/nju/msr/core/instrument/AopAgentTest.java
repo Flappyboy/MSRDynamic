@@ -1,5 +1,6 @@
 package com.nju.msr.core.instrument;
 
+import com.nju.msr.core.Constant;
 import com.nju.msr.core.Param;
 
 import java.lang.instrument.ClassFileTransformer;
@@ -25,5 +26,14 @@ public class AopAgentTest {
 
         /*Registers the supplied transformer.*/
         _inst.addTransformer(trans);
+
+        String[] serviceNames = Param.PersistenceServiceName.split(Constant.PersistenceServiceNameSplitSign);
+        for (String name: serviceNames){
+            try {
+                Class.forName(name);
+            } catch (ClassNotFoundException e) {
+                System.err.println("Persistence Service Name :  ClassNotFound  "+ name);
+            }
+        }
     }
 }

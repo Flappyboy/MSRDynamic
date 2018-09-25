@@ -1,12 +1,23 @@
 package com.nju.msr.core.model;
 
+import com.nju.msr.core.Constant;
 import com.nju.msr.core.Param;
+import com.nju.msr.utils.StackUtil;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CallChain {
 
-    MethodPool methodPool = MethodPool.getInstance();
+    MethodFactory methodFactory = MethodFactory.getInstance();
+
+    public static ThreadLocal<Stack<CallInfo>> threadCallChain = new InheritableThreadLocal<Stack<CallInfo>>();
+
+    private static CallInfoStackFactory callInfoStackFactory =new CallInfoStackFactory();
+
+    private AtomicInteger callInfoIdCount = new AtomicInteger(0);
+
+    ThreadInfo threadInfo = new ThreadInfo();
 
     private CallInfo rootCall;
 
@@ -14,6 +25,13 @@ public class CallChain {
      * 由于无法可靠地保证获得方法结束信息，所以目前这个状态变量是不靠谱，
      */
     private CallInfo currentCall;
+
+    //全局唯一标识
+    private String callChainId;
+
+    public Iterator<CallInfo> iterator(){
+        return new Itr();
+    }
 
     /**
      * 从rootCall开始遍历调用链
@@ -47,15 +65,54 @@ public class CallChain {
         }
     }
 
-    public Iterator<CallInfo> iterator(){
-        return new Itr();
+    private static class CallInfoStackFactory{
+        List<Stack<CallInfo>> stackList = new ArrayList<>();
+
+        Stack<CallInfo> getCallInfoStack(){
+            Stack<CallInfo> stack = new Stack<>();
+            stackList.add(stack);
+            return stack;
+        }
     }
 
-    private Thread thread;
-    //private String threadIdSign;
 
-    public CallChain(Thread thread) {
-        this.thread = thread;
+    public CallChain() {
+        callChainId = System.currentTimeMillis()+ Constant.callCahinIdSplitSign +Thread.currentThread().getId();
+
+        //初始获得的应该为从父线程继承而来的，可以获得是谁创建了该线程
+        if(threadCallChain.get()!=null && !threadCallChain.get().empty()) {
+            CallInfo currentCallInfo = threadCallChain.get().peek();
+            if (currentCallInfo != null) {
+                threadInfo.setCreatorCallChainId(currentCallInfo.getCallChain().getCallChainId());
+                threadInfo.setCreatorCallInfoId(currentCallInfo.getCallInfoid());
+            }
+        }
+
+        threadCallChain.set(new Stack<>());
+    }
+
+    protected void methodStart(Method method){
+        addCallInfoThroughStackTrace(StackUtil.processedStackTrace(),method);
+        Stack stack = copyStack(threadCallChain.get());
+        stack.push(this.currentCall);
+        threadCallChain.set(stack);
+    }
+
+    protected void methodEnd(Method method){
+        /*if (this.getCurrentCall()!=null)
+            this.getCurrentCall().setEndTime(System.currentTimeMillis());*/
+
+        Stack<CallInfo> stack = copyStack(threadCallChain.get());
+        if (!stack.empty()){
+            CallInfo callInfo = stack.pop();
+            callInfo.setEndTime(System.currentTimeMillis());
+            if (callInfo.getCallee()!=method){
+                System.err.println("methodEnd 结束方法不一致");
+            }
+        }else{
+            System.err.println("mehtodEnd stack不应为空");
+        }
+        threadCallChain.set(stack);
     }
 
     /**
@@ -63,7 +120,7 @@ public class CallChain {
      * @param stackTraceElements
      * @param method
      */
-    protected void addCallInfoThroughStackTrace(List<StackTraceElement> stackTraceElements, Method method){
+    private void addCallInfoThroughStackTrace(List<StackTraceElement> stackTraceElements, Method method){
         if (rootCall==null){
             rootCall = generateCallChainFromStackTrace(null,stackTraceElements,stackTraceElements.size()-1, method);
             return;
@@ -90,7 +147,7 @@ public class CallChain {
 
         Method method = callInfo.getCallee();
         StackTraceElement s = stackTraceElements.get(index);
-        Method stackTrackMethod = MethodPool.getInstance().getMethod(s.getClassName(),s.getMethodName());
+        Method stackTrackMethod = MethodFactory.getInstance().getMethod(s.getClassName(),s.getMethodName());
         if (stackTrackMethod == method)
             return true;
 
@@ -122,11 +179,11 @@ public class CallChain {
             throw new RuntimeException("startIndex不应该小于0");
         }
         if (startIndex==0){
-            return new CallInfo(preMethod,method);
+            return createTargetCallInfo(preMethod,method);
         }
 
         StackTraceElement s = stackTraceElements.get(startIndex);
-        CallInfo root = new CallInfo(preMethod, methodPool.getMethod(s.getClassName(),s.getMethodName()));
+        CallInfo root = createCallInfo(preMethod, methodFactory.getMethod(s.getClassName(),s.getMethodName()));
 
         CallInfo parentTemp = root;
         for (int i=startIndex; i>0; i--){
@@ -134,8 +191,6 @@ public class CallChain {
             parentTemp.addChildCall(callInfo);
             parentTemp = callInfo;
         }
-
-        this.currentCall = parentTemp;
         return root;
     }
 
@@ -151,27 +206,50 @@ public class CallChain {
         }
         if (startIndex==1){
             StackTraceElement s1 = stackTraceElements.get(startIndex);
-            Method method1 = methodPool.getMethod(s1.getClassName(),s1.getMethodName());
-            return new CallInfo(method1,method);
+            Method method1 = methodFactory.getMethod(s1.getClassName(),s1.getMethodName());
+            return createTargetCallInfo(method1,method);
         }
         StackTraceElement s1 = stackTraceElements.get(startIndex);
         StackTraceElement s2 = stackTraceElements.get(startIndex-1);
-        Method method1 = methodPool.getMethod(s1.getClassName(),s1.getMethodName());
-        Method method2 = methodPool.getMethod(s2.getClassName(),s2.getMethodName());
-        return new CallInfo(method1,method2);
+        Method method1 = methodFactory.getMethod(s1.getClassName(),s1.getMethodName());
+        Method method2 = methodFactory.getMethod(s2.getClassName(),s2.getMethodName());
+        return createCallInfo(method1,method2);
     }
 
+    private CallInfo createTargetCallInfo(Method caller, Method callee){
+        this.currentCall = createCallInfo(caller,callee);
+        return this.currentCall;
+    }
+    private CallInfo createCallInfo(Method caller, Method callee){
+        return new CallInfo(caller,callee,String.valueOf(callInfoIdCount.getAndIncrement()),this);
+    }
 
 
     public CallInfo getRootCall() {
         return rootCall;
     }
 
-    public Thread getThread() {
-        return thread;
-    }
-
     public CallInfo getCurrentCall() {
         return currentCall;
+    }
+
+    public String getCallChainId() {
+        return callChainId;
+    }
+
+    @Override
+    public String toString() {
+        return "CallChain{" +
+                "callChainId='" + callChainId + '\'' +
+                "threadInfo=" + threadInfo +
+                '}';
+    }
+
+    private Stack copyStack(Stack stack){
+        Stack s = new Stack();
+        for (Object o: stack){
+            s.push(o);
+        }
+        return s;
     }
 }

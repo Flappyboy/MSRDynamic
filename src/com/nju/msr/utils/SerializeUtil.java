@@ -1,5 +1,6 @@
 package com.nju.msr.utils;
 
+import com.nju.msr.core.model.CallChain;
 import com.nju.msr.core.model.CallInfo;
 import com.nju.msr.core.model.MethodRelation;
 
@@ -13,6 +14,14 @@ public class SerializeUtil{
             MethodRelation methodRelation = methodRelationEntry.getValue();
             stringBuilder.append(methodRelation+"\n");
         }
+        return stringBuilder;
+    }
+
+    public static StringBuilder serializeToString(CallChain callChain){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(callChain);
+        stringBuilder.append("\n");
+        stringBuilder.append(serializeToString(callChain.getRootCall(),0));
         return stringBuilder;
     }
 

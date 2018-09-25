@@ -11,6 +11,9 @@ public class Param {
     public static String saveCallChainInfoFilePath = "E:/workspace/test/data/CallChain.txt";
     public static String saveMethodRelationInfoFilePath = "E:/workspace/test/data/MethodRelation.txt";
 
+    public static final String PersistenceServiceName="";
+
+
     public static boolean isUnderPackage(String name){
         name = name.replaceAll("\\.","/");
         boolean flag=false;

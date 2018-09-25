@@ -3,13 +3,13 @@ package com.nju.msr.core.model;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MethodPool {
+public class MethodFactory {
 
-    private static final MethodPool INSTANCE = new MethodPool();
+    private static final MethodFactory INSTANCE = new MethodFactory();
 
-    private MethodPool() {}
+    private MethodFactory() {}
 
-    public static MethodPool getInstance() {
+    public static MethodFactory getInstance() {
         return INSTANCE;
     }
 

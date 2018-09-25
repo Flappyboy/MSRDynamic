@@ -3,10 +3,18 @@ package com.nju.msr.core.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class CallInfo implements Serializable {
     private MethodRelationManagement methodRelationManagement = MethodRelationManagement.getInstance();
 
+    //用于在CallChain中的唯一标识
+    private String callInfoid;
+
+    private CallChain callChain;
+
+    //在这个类中更关注的应该是其中的callee
     private MethodRelation methodRelation;
 
     private Long startTime;
@@ -19,6 +27,14 @@ public class CallInfo implements Serializable {
     private List<CallInfo> childCallList = new ArrayList<>();
 
     private transient CallInfo parentCall;
+
+    public CallInfo(Method caller, Method callee, String callInfoid, CallChain callChain) {
+        this.methodRelation = methodRelationManagement.getMethodRelation(caller,callee);
+        this.startTime = System.currentTimeMillis();
+
+        this.callInfoid = callInfoid;
+        this.callChain = callChain;
+    }
 
     public void addChildCall(CallInfo callInfo){
         if (callInfo!=null) {
@@ -54,11 +70,6 @@ public class CallInfo implements Serializable {
         return false;
     }
 
-    public CallInfo(Method caller, Method callee) {
-        this.methodRelation = methodRelationManagement.getMethodRelation(caller,callee);
-        this.startTime = System.currentTimeMillis();
-    }
-
     public long getTime(){
         if(startTime==null||endTime==null){
             return -1;
@@ -87,9 +98,19 @@ public class CallInfo implements Serializable {
         this.endTime = endTime;
     }
 
+    public String getCallInfoid() {
+        return callInfoid;
+    }
+
+    public CallChain getCallChain() {
+        return callChain;
+    }
+
     @Override
     public String toString() {
         return "CallInfo{" +
+                "callInfoId"+ getCallInfoid() +
+                "caller=" + getCallInfoid() +
                 "caller=" + getCaller() +
                 ", callee=" + getCallee() +
                 ", startTime=" + startTime +

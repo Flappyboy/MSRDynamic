@@ -3,11 +3,12 @@ package com.nju.msr.core.model;
 import com.nju.msr.core.Param;
 import com.nju.msr.utils.FileUtil;
 import com.nju.msr.utils.SerializeUtil;
+import com.nju.msr.utils.StackUtil;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
 
 //方法结束时的完善，线程之间关系的处理，持久化的完善
@@ -29,7 +30,7 @@ public class CallChainManagement {
     private CallChain getCurrentCallChain() {
         CallChain callChain = callChainMap.get(Thread.currentThread().getId());
         if (callChain == null) {
-            callChain = new CallChain(Thread.currentThread());
+            callChain = new CallChain();
             callChainMap.put(Thread.currentThread().getId(),callChain);
         }
         return callChain;
@@ -37,14 +38,12 @@ public class CallChainManagement {
 
     public void methodStart(Method method){
 
-
-        if (isRootMethod() && callChainMap.get(Thread.currentThread().getId())!=null){
+        boolean isRootMehtod = StackUtil.isRootMethod();
+        if (isRootMehtod && callChainMap.get(Thread.currentThread().getId())!=null){
             callChainEnd();
         }
 
-
-        CallChain callChain = getCurrentCallChain();
-        callChain.addCallInfoThroughStackTrace(processedStackTrace(),method);
+        getCurrentCallChain().methodStart(method);
     }
 
     /**
@@ -56,28 +55,18 @@ public class CallChainManagement {
 
         CallChain callChain = getCurrentCallChain();
         //save(callChain,Thread.currentThread().getId());
-        if (callChain.getCurrentCall()!=null)
-            callChain.getCurrentCall().setEndTime(System.currentTimeMillis());
-        if (isRootMethod())
-            callChainEnd();
-    }
 
-    //判断当前方法之前的方法是否全部都是非关注的类
-    private boolean isRootMethod(){
-        List<StackTraceElement> stackTraceElements = processedStackTrace();
-        //去除当前方法
-        stackTraceElements.remove(0);
-        for (StackTraceElement s: stackTraceElements) {
-            if (Param.isUnderPackage(s.getClassName()))
-                return false;
-        }
-        return true;
+        callChain.methodEnd(method);
+
+        //判断调用链是否结束
+        if (StackUtil.isRootMethod())
+            callChainEnd();
     }
     public void callChainEnd(){
         callChainEnd(Thread.currentThread().getId());
     }
     public void callChainEnd(long key){
-        save(callChainMap.get(key),key);
+        save(callChainMap.get(key));
         callChainMap.remove(key);
     }
 
@@ -99,28 +88,12 @@ public class CallChainManagement {
     }*/
 
     //TODO 目前只是简化的
-    private synchronized void save(CallChain callChain, long key) {
+    private synchronized void save(CallChain callChain) {
 //        try {
-            String str = key + " " + SerializeUtil.serializeToString(callChain.getRootCall(),0);
+            String str = SerializeUtil.serializeToString(callChain).toString();
             FileUtil.appendContentToFile(Param.saveCallChainInfoFilePath, str);
         /*} catch (IOException e) {
             e.printStackTrace();
         }*/
-    }
-
-    /**
-     * 将堆栈中的第一个方法和本项目的类过滤调
-     */
-    public static List<StackTraceElement> processedStackTrace(){
-        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        List<StackTraceElement> extractStackTraceElements = new ArrayList<>();
-        for (int i=1; i<stackTraceElements.length; i++) {
-            StackTraceElement s = stackTraceElements[i];
-            if (s.getClassName().startsWith("com.nju.msr"))
-                continue;
-            extractStackTraceElements.add(s);
-        }
-        return extractStackTraceElements;
-//        CallChainManagement.getCurrentCallChain().processStackTrace(extractStackTraceElements, method);
     }
 }

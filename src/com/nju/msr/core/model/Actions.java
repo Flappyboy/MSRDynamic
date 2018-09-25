@@ -18,12 +18,12 @@ public class Actions {
 
         //CallChainInfo.processCurrentThread(owner, name, desc);
 
-        CallChainManagement.getInstance().methodStart(MethodPool.getInstance().getMethod(owner,name,desc));
+        CallChainManagement.getInstance().methodStart(MethodFactory.getInstance().getMethod(owner,name,desc));
     }
 
     static public void methodEnd(String owner, String name, String desc){
 
-        CallChainManagement.getInstance().methodEnd(MethodPool.getInstance().getMethod(owner,name,desc));
+        CallChainManagement.getInstance().methodEnd(MethodFactory.getInstance().getMethod(owner,name,desc));
     }
 
     static public void startInvoke(int opcode, String owner, String name, String desc, boolean itf){
