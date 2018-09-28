@@ -6,7 +6,11 @@ import com.nju.msr.core.model.MethodRelation;
 
 import java.io.*;
 import java.util.Map;
-
+/**
+ * @Author: jiaqi li
+ * @Date: 2018/9
+ * @Version 1.0
+ */
 public class SerializeUtil{
     public static StringBuilder serializeToString(Map<String, MethodRelation> methodRelationMap){
         StringBuilder stringBuilder = new StringBuilder();

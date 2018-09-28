@@ -4,21 +4,37 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
+/**
+ * @Author: jiaqi li
+ * @Date: 2018/9
+ * @Version 1.0
+ */
 
+/**
+ * 一些初始化的参数
+ */
 public class Param {
     private Param() {}
 
     public static String[] packageName = {};
 
-    public static long MethodRelationSaveThreadSleepTime = 1000;
-    public static long MethodRelationSaveIntervalTime= 10000;
+    public static long MethodRelationSaveThreadSleepTime;
+    public static long MethodRelationSaveIntervalTime;
 
-    public static String saveCallChainInfoFilePath = "E:/workspace/test/data/CallChain.txt";
-    public static String saveMethodRelationInfoFilePath = "E:/workspace/test/data/MethodRelation.txt";
-
-    public static final String PersistenceServiceName="com.nju.msr.persistence.DemoService&#com.nju.msr.persistence.Sqlite.SqliteService&#com.nju.msr.persistence.neo4j.remote.Neo4jService";
+    public static boolean persistenceServiceOpen = true;
+    public static String PersistenceServiceName;
 
     public static final Properties PROPERTIES = new Properties();
+
+    private static void generateParamsFromProperties(Properties properties){
+        Param.packageName = properties.getProperty("packageName").replaceAll("\\.","/").split(Constant.ParamsPackageNameSplitSign);
+
+        MethodRelationSaveThreadSleepTime = Long.parseLong(properties.getProperty("MethodRelationSaveThreadSleepTime","1000"));
+        MethodRelationSaveIntervalTime = Long.parseLong(properties.getProperty("MethodRelationSaveIntervalTime","10000"));
+
+        persistenceServiceOpen = Boolean.parseBoolean(properties.getProperty("persistenceServiceOpen","true"));
+        PersistenceServiceName = properties.getProperty("PersistenceServiceName","com.nju.msr.persistence.DemoService&#com.nju.msr.persistence.Sqlite.SqliteService&#com.nju.msr.persistence.neo4j.remote.Neo4jService");
+    }
 
 
     public static boolean isUnderPackage(String name){
@@ -54,11 +70,7 @@ public class Param {
                 PROPERTIES.setProperty(str[0],str[1]);
             }
         }
-        generatePackageName(PROPERTIES.getProperty("packageName"));
-    }
-
-    private static void generatePackageName(String str){
-        Param.packageName = str.replaceAll("\\.","/").split(Constant.ParamsPackageNameSplitSign);
+        generateParamsFromProperties(PROPERTIES);
     }
 
     public static void readProperties(String filePath){

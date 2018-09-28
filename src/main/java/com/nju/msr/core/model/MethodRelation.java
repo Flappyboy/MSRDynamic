@@ -4,7 +4,15 @@ import com.nju.msr.core.Constant;
 import com.nju.msr.core.persistence.ServiceManager;
 
 import java.util.concurrent.atomic.AtomicInteger;
+/**
+ * @Author: jiaqi li
+ * @Date: 2018/9
+ * @Version 1.0
+ */
 
+/**
+ * 表示两个方法之间的关系
+ */
 public class MethodRelation implements Constant {
     private Method caller;
 

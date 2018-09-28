@@ -5,7 +5,11 @@ import com.nju.msr.core.model.MethodRelation;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
+/**
+ * @Author: jiaqi li
+ * @Date: 2018/9
+ * @Version 1.0
+ */
 public class NodeIdManagement {
 
     private static final Map<Method, Long> methodIdMap = new ConcurrentHashMap<>();

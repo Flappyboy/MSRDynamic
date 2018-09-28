@@ -10,7 +10,11 @@ import com.nju.msr.core.persistence.ServiceManager;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Map;
-
+/**
+ * @Author: jiaqi li
+ * @Date: 2018/9
+ * @Version 1.0
+ */
 public class SqliteService implements Service {
 
     static {

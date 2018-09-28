@@ -7,7 +7,16 @@ import com.nju.msr.utils.StackUtil;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+/**
+ * @Author: jiaqi li
+ * @Date: 2018/9
+ * @Version 1.0
+ */
 
+/**
+ * 表示一次调用链的完整过程
+ * 将{@link CallInfo}作为节点，构成一棵树
+ */
 public class CallChain {
 
     MethodFactory methodFactory = MethodFactory.getInstance();

@@ -5,7 +5,15 @@ import com.nju.msr.core.persistence.ServiceManager;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+/**
+ * @Author: jiaqi li
+ * @Date: 2018/9
+ * @Version 1.0
+ */
 
+/**
+ * 表示一次调用的信息，在{@link CallChain}中作为节点，表示a调用b的过程
+ */
 public class CallInfo implements Serializable {
     private MethodRelationManagement methodRelationManagement = MethodRelationManagement.getInstance();
 

@@ -8,7 +8,11 @@ import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementResult;
 
 import static org.neo4j.driver.v1.Values.parameters;
-
+/**
+ * @Author: jiaqi li
+ * @Date: 2018/9
+ * @Version 1.0
+ */
 public class BasicOperation {
 
     public static Session getSession(){

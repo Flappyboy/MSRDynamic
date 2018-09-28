@@ -14,7 +14,11 @@ import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
 
 //方法结束时的完善，线程之间关系的处理，持久化的完善
-
+/**
+ * @Author: jiaqi li
+ * @Date: 2018/9
+ * @Version 1.0
+ */
 public class CallChainManagement {
 
     private static final CallChainManagement INSTANCE = new CallChainManagement();

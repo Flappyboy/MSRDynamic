@@ -13,7 +13,11 @@ import org.neo4j.driver.v1.*;
 import static org.neo4j.driver.v1.Values.parameters;
 
 import java.util.Map;
-
+/**
+ * @Author: jiaqi li
+ * @Date: 2018/9
+ * @Version 1.0
+ */
 public class Neo4jService implements Service {
 
     public static final String neo4j="neo4j.remote";
@@ -22,11 +26,11 @@ public class Neo4jService implements Service {
     public static final String neo4jPassword = "neo4j.remote.password";
 
     static {
-        String open = Param.PROPERTIES.getProperty(neo4j);
+        boolean open = Boolean.parseBoolean(Param.PROPERTIES.getProperty(neo4j,"false"));
         String uri = Param.PROPERTIES.getProperty(uriName);
         String username = Param.PROPERTIES.getProperty(neo4jUsername);
         String password = Param.PROPERTIES.getProperty(neo4jPassword);
-        if (open!=null&&"true".equals(open.toLowerCase())&&!StringUtil.isAnyBlank(uri,username,password)) {
+        if (open&&!StringUtil.isAnyBlank(uri,username,password)) {
             try {
                 driver = GraphDatabase.driver(uri, AuthTokens.basic(username, password));
                 ServiceManager.registerService(new Neo4jService());

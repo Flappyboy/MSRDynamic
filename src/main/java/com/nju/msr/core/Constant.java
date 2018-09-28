@@ -1,5 +1,13 @@
 package com.nju.msr.core;
+/**
+ * @Author: jiaqi li
+ * @Date: 2018/9
+ * @Version 1.0
+ */
 
+/**
+ * 一些常量
+ */
 public interface Constant {
 
     public static final String methodIdSplitSign = "%!#";

@@ -6,7 +6,11 @@ import com.nju.msr.utils.StringUtil;
 
 import java.io.Serializable;
 import java.util.*;
-
+/**
+ * @Author: jiaqi li
+ * @Date: 2018/9
+ * @Version 1.0
+ */
 /**
  * 表示一个方法，通过asm可以获得方法的类名、方法名、签名等可以唯一确定一个方法，但通过堆栈只能获得类名方法名，无法确定一个方法。
  */

@@ -7,7 +7,15 @@ import com.nju.msr.utils.SerializeUtil;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+/**
+ * @Author: jiaqi li
+ * @Date: 2018/9
+ * @Version 1.0
+ */
 
+/**
+ * 使用享元模式创建{@link MethodRelation}
+ */
 public class MethodRelationManagement {
 
     long time = System.currentTimeMillis();

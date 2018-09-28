@@ -2,7 +2,15 @@ package com.nju.msr.core.model;
 
 import java.util.HashMap;
 import java.util.Map;
+/**
+ * @Author: jiaqi li
+ * @Date: 2018/9
+ * @Version 1.0
+ */
 
+/**
+ * 使用享元模式创建{@link Method}
+ */
 public class MethodFactory {
 
     private static final MethodFactory INSTANCE = new MethodFactory();

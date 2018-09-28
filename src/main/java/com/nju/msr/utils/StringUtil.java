@@ -1,5 +1,9 @@
 package com.nju.msr.utils;
-
+/**
+ * @Author: jiaqi li
+ * @Date: 2018/9
+ * @Version 1.0
+ */
 public class StringUtil {
     public static boolean isEmpty(CharSequence cs) {
         return cs == null || cs.length() == 0;

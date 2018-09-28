@@ -3,7 +3,11 @@ package com.nju.msr.utils;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
+/**
+ * @Author: jiaqi li
+ * @Date: 2018/9
+ * @Version 1.0
+ */
 public class FileUtil {
 
     public static void appendContentToFile(String fileName, String content) {

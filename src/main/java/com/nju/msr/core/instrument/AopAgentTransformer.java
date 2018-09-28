@@ -9,7 +9,11 @@ import java.io.IOException;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
-
+/**
+ * @Author: jiaqi li
+ * @Date: 2018/9
+ * @Version 1.0
+ */
 public class AopAgentTransformer implements ClassFileTransformer{
 
     public byte[] transform(ClassLoader loader, String className,
