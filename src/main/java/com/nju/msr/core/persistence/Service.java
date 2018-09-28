@@ -5,6 +5,8 @@ import com.nju.msr.core.model.CallInfo;
 import com.nju.msr.core.model.Method;
 import com.nju.msr.core.model.MethodRelation;
 
+import java.util.Map;
+
 public interface Service {
 
     void MethodCreated(Method method);
@@ -13,7 +15,11 @@ public interface Service {
 
     void MethodRelationCount(MethodRelation methodRelation, int count);
 
+    void MethodRelations(Map<String, MethodRelation> methodRelationMap);
+
     void CallChainCreated(CallChain callChain);
 
     void CallCreated(CallInfo callInfo);
+
+    void CallChainFinish(CallChain callChain);
 }

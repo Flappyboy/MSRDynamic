@@ -1,6 +1,9 @@
 package com.nju.msr.core.model;
 
 import com.nju.msr.core.Constant;
+import com.nju.msr.core.persistence.ServiceManager;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MethodRelation implements Constant {
     private Method caller;
@@ -9,10 +12,17 @@ public class MethodRelation implements Constant {
 
     private String id;
 
+    private AtomicInteger count = new AtomicInteger(0);
+
     public MethodRelation(Method caller, Method callee) {
+        if (caller==null){
+            caller = MethodFactory.getInstance().getMethod("*START*","*START*");
+        }
         this.caller = caller;
         this.callee = callee;
         this.id = generateId(caller,callee);
+
+        ServiceManager.MethodRelationCreated(this);
     }
 
     public static String generateId(Method caller, Method callee){
@@ -32,6 +42,18 @@ public class MethodRelation implements Constant {
 
     public String getId() {
         return id;
+    }
+
+    public int getCount() {
+        return count.get();
+    }
+
+    public void call(){
+        ServiceManager.MethodRelationCount(this, this.count.incrementAndGet());
+    }
+
+    public void setCount(int count) {
+        this.count.set(count);
     }
 
     @Override

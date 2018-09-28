@@ -15,7 +15,7 @@ public class AopAgentTest {
      * then the real application main method will be called.
      **/
     public static void premain(String agentArgs, Instrumentation inst) {
-        Param.packageName=agentArgs.replaceAll("\\.","/").split("&");
+        Param.generatePARAMS(agentArgs);
         System.out.println("AopAgentTest.premain() was called.");
 
         /* Provides services that allow Java programming language agents to instrument programs running on the JVM.*/

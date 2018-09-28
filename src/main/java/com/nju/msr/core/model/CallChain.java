@@ -2,6 +2,7 @@ package com.nju.msr.core.model;
 
 import com.nju.msr.core.Constant;
 import com.nju.msr.core.Param;
+import com.nju.msr.core.persistence.ServiceManager;
 import com.nju.msr.utils.StackUtil;
 
 import java.util.*;
@@ -89,6 +90,8 @@ public class CallChain {
         }
 
         threadCallChain.set(new Stack<>());
+
+        ServiceManager.CallChainCreated(this);
     }
 
     protected void methodStart(Method method){
@@ -147,6 +150,7 @@ public class CallChain {
 
         Method method = callInfo.getCallee();
         StackTraceElement s = stackTraceElements.get(index);
+        //这一步会导致MethodFactory中有很多额外的不参与调用的方法
         Method stackTrackMethod = MethodFactory.getInstance().getMethod(s.getClassName(),s.getMethodName());
         if (stackTrackMethod == method)
             return true;

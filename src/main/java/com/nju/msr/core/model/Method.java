@@ -1,6 +1,7 @@
 package com.nju.msr.core.model;
 
 import com.nju.msr.core.Constant;
+import com.nju.msr.core.persistence.ServiceManager;
 import com.nju.msr.utils.StringUtil;
 
 import java.io.Serializable;
@@ -10,6 +11,8 @@ import java.util.*;
  * 表示一个方法，通过asm可以获得方法的类名、方法名、签名等可以唯一确定一个方法，但通过堆栈只能获得类名方法名，无法确定一个方法。
  */
 public class Method implements Serializable, Constant {
+
+    public enum TYPE{FOCUS, OTHER};
 
     //类名
     private String owner;
@@ -23,11 +26,20 @@ public class Method implements Serializable, Constant {
     //构造出的唯一标识
     private String id;
 
+    private TYPE type;
+
     public Method(String owner, String name, String descriptor) {
         this.owner = owner;
         this.name = name;
         this.descriptor = descriptor;
         this.id = generateId(owner,name,descriptor);
+
+        if (StringUtil.isBlank(descriptor))
+            type = TYPE.OTHER;
+        else
+            type = TYPE.FOCUS;
+
+        ServiceManager.MethodCreated(this);
     }
     public Method(String id){
         this.id = id;
@@ -35,6 +47,13 @@ public class Method implements Serializable, Constant {
         this.owner= map.get("owner");
         this.name= map.get("name");
         this.descriptor= map.get("descriptor");
+
+        if (StringUtil.isBlank(this.descriptor))
+            type = TYPE.OTHER;
+        else
+            type = TYPE.FOCUS;
+
+        ServiceManager.MethodCreated(this);
     }
 
 
@@ -70,6 +89,10 @@ public class Method implements Serializable, Constant {
         if(value.length>=3)
             result.put("descriptor",value[2]);
         return result;
+    }
+
+    public TYPE getType() {
+        return type;
     }
 
     @Override

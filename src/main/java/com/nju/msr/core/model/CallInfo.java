@@ -1,10 +1,10 @@
 package com.nju.msr.core.model;
 
+import com.nju.msr.core.persistence.ServiceManager;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class CallInfo implements Serializable {
     private MethodRelationManagement methodRelationManagement = MethodRelationManagement.getInstance();
@@ -29,11 +29,13 @@ public class CallInfo implements Serializable {
     private transient CallInfo parentCall;
 
     public CallInfo(Method caller, Method callee, String callInfoid, CallChain callChain) {
-        this.methodRelation = methodRelationManagement.getMethodRelation(caller,callee);
+        this.methodRelation = methodRelationManagement.callMethodRelation(caller,callee);
         this.startTime = System.currentTimeMillis();
 
         this.callInfoid = callInfoid;
         this.callChain = callChain;
+
+        ServiceManager.CallCreated(this);
     }
 
     public void addChildCall(CallInfo callInfo){

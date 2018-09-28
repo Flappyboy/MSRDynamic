@@ -1,6 +1,8 @@
 package com.nju.msr.core.model;
 
 import com.nju.msr.core.Param;
+import com.nju.msr.core.persistence.Service;
+import com.nju.msr.core.persistence.ServiceManager;
 import com.nju.msr.utils.FileUtil;
 import com.nju.msr.utils.SerializeUtil;
 import com.nju.msr.utils.StackUtil;
@@ -66,7 +68,7 @@ public class CallChainManagement {
         callChainEnd(Thread.currentThread().getId());
     }
     public void callChainEnd(long key){
-        save(callChainMap.get(key));
+        ServiceManager.CallChainFinish(callChainMap.get(key));
         callChainMap.remove(key);
     }
 
@@ -86,14 +88,4 @@ public class CallChainManagement {
             }
         });
     }*/
-
-    //TODO 目前只是简化的
-    private synchronized void save(CallChain callChain) {
-//        try {
-            String str = SerializeUtil.serializeToString(callChain).toString();
-            FileUtil.appendContentToFile(Param.saveCallChainInfoFilePath, str);
-        /*} catch (IOException e) {
-            e.printStackTrace();
-        }*/
-    }
 }
