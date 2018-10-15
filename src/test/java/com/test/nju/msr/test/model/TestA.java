@@ -37,6 +37,7 @@ public class TestA {
         try {
             throw new Exception();
         } catch (Exception e) {
+            System.out.println("func4 e.print");
             e.printStackTrace();
         }
     }

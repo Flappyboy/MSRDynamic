@@ -4,6 +4,7 @@ import com.nju.msr.core.Param;
 import com.nju.msr.core.asm.ClassAdapter;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.util.CheckClassAdapter;
 
 import java.io.IOException;
 import java.lang.instrument.ClassFileTransformer;
@@ -21,6 +22,9 @@ public class AopAgentTransformer implements ClassFileTransformer{
                             byte[] classfileBuffer) throws IllegalClassFormatException {
         byte[] transformed = null;
 
+        /*if(!Param.isUnderPackage(className)&&!className.startsWith("org/hsqldb")){
+            return classfileBuffer;
+        }*/
         if(!Param.isUnderPackage(className)){
             return classfileBuffer;
         }
@@ -31,7 +35,8 @@ public class AopAgentTransformer implements ClassFileTransformer{
             ClassReader cr = new ClassReader(new java.io.ByteArrayInputStream(classfileBuffer));
             ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
             ClassAdapter ca = new ClassAdapter(cw);
-            cr.accept(ca, 0);
+            //cr.accept(new CheckClassAdapter(ca), ClassReader.EXPAND_FRAMES);
+            cr.accept(ca, ClassReader.EXPAND_FRAMES);
             transformed = cw.toByteArray();
         }catch (RuntimeException re){
             System.err.println("can't transform "+ className+"  "+re);

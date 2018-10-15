@@ -12,6 +12,7 @@ import com.nju.msr.utils.StringUtil;
 import org.neo4j.driver.v1.*;
 import static org.neo4j.driver.v1.Values.parameters;
 
+import java.util.List;
 import java.util.Map;
 /**
  * @Author: jiaqi li
@@ -64,10 +65,10 @@ public class Neo4jService implements Service {
         if (!Param.isUnderPackage(methodRelation.getCaller().getOwner())&& !Param.isUnderPackage(methodRelation.getCallee().getOwner()))
             return;
 
-        Session session = driver.session();
-        session.runAsync( " match (a)-[call:CALL]-(b) where id(call)={relationId} set call.count="+count,
+        /*Session session = driver.session();
+        session.runAsync( " match (a)-[call:CALL]->(b) where id(call)={relationId} set call.count="+count,
                 parameters( "relationId",NodeIdManagement.getNodeId(methodRelation)));
-        session.closeAsync();
+        session.closeAsync();*/
     }
 
     @Override
@@ -87,6 +88,41 @@ public class Neo4jService implements Service {
 
     @Override
     public void CallChainFinish(CallChain callChain) {
+        new Thread(new CallChainRunnable(callChain)).start();
 
+    }
+    class CallChainRunnable implements Runnable{
+
+        CallChain callChain;
+
+        public CallChainRunnable(CallChain callChain) {
+            this.callChain = callChain;
+        }
+
+        @Override
+        public void run() {
+            System.out.println();
+            System.out.println(callChain.getCallChainId()+"   START ---------------------------------");
+            processCallInfo(callChain.getRootCall(),0);
+            System.out.println();
+            System.out.println(callChain.getCallChainId()+"   END ---------------------------------");
+        }
+    }
+
+    private void processCallInfo(CallInfo callInfo, int level){
+        setValue(callInfo);
+        for (int i=0; i<callInfo.getChildCallListSize(); i++) {
+            CallInfo tmp = callInfo.getChildCall(i);
+            processCallInfo(tmp,level+1);
+        }
+    }
+
+    private void setValue(CallInfo callInfo){
+        Session session = driver.session();
+        session.runAsync( " match (a)-[call:CALL]->(b) where id(call)={relationId} set call.callInfo=call.callInfo+[{callChainId}]",
+                parameters( "relationId",NodeIdManagement.getNodeId(callInfo.getMethodRelation()),
+                        "callChainId",callInfo.getCallChain().getCallChainId()));
+        session.closeAsync();
+        System.out.print("*");
     }
 }

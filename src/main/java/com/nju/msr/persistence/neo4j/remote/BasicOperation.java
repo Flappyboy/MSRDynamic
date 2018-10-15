@@ -60,7 +60,7 @@ public class BasicOperation {
             return;
         }
 
-        StatementResult result = session.run( " match (caller:Method),(callee:Method) where id(caller)={callerId} and id(callee)={calleeId} CREATE (caller)-[call:CALL {count:0}]->(callee) return call",
+        StatementResult result = session.run( " match (caller:Method),(callee:Method) where id(caller)={callerId} and id(callee)={calleeId} CREATE (caller)-[call:CALL {count:0,callInfo:[]}]->(callee) return call",
                 parameters( "callerId",NodeIdManagement.getNodeId(methodRelation.getCaller()),
                         "calleeId",NodeIdManagement.getNodeId(methodRelation.getCallee())));
         session.closeAsync();

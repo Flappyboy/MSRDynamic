@@ -30,8 +30,8 @@ public class ServiceManager {
     public static void MethodCreated(Method method) {
         if(!Param.persistenceServiceOpen) return;
 
-        if (Param.isUnderPackage(method.getOwner())&& method.getType()== Method.TYPE.OTHER)
-            return;
+        /*if (Param.isUnderPackage(method.getOwner())&& method.getType()== Method.TYPE.OTHER)
+            return;*/
         for (Service service: serviceList){
             service.MethodCreated(method);
         }

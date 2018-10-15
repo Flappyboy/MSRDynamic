@@ -116,6 +116,10 @@ public class CallInfo implements Serializable {
         return callChain;
     }
 
+    public MethodRelation getMethodRelation() {
+        return methodRelation;
+    }
+
     @Override
     public String toString() {
         return "CallInfo{" +

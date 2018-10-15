@@ -33,11 +33,14 @@ public class Param {
         MethodRelationSaveIntervalTime = Long.parseLong(properties.getProperty("MethodRelationSaveIntervalTime","10000"));
 
         persistenceServiceOpen = Boolean.parseBoolean(properties.getProperty("persistenceServiceOpen","true"));
-        PersistenceServiceName = properties.getProperty("PersistenceServiceName","com.nju.msr.persistence.DemoService&#com.nju.msr.persistence.Sqlite.SqliteService&#com.nju.msr.persistence.neo4j.remote.Neo4jService");
+        //PersistenceServiceName = properties.getProperty("PersistenceServiceName","com.nju.msr.persistence.DemoService&#com.nju.msr.persistence.Sqlite.SqliteService&#com.nju.msr.persistence.neo4j.remote.Neo4jService");
+        PersistenceServiceName = properties.getProperty("PersistenceServiceName","com.nju.msr.persistence.neo4j.remote.Neo4jService");
     }
 
 
     public static boolean isUnderPackage(String name){
+        if (name.contains("$$"))
+            return false;
         name = name.replaceAll("\\.","/");
         boolean flag=false;
         for (String s: Param.packageName){

@@ -119,7 +119,7 @@ public class CallChain {
             CallInfo callInfo = stack.pop();
             callInfo.setEndTime(System.currentTimeMillis());
             if (callInfo.getCallee()!=method){
-                System.err.println("methodEnd 结束方法不一致");
+                System.err.println("methodEnd 结束方法不一致 endMethod"+ method.toString() + "   stackMethod:"+callInfo.getCallee());
             }
         }else{
             System.err.println("mehtodEnd stack不应为空");

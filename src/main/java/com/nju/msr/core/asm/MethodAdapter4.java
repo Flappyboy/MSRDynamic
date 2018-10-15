@@ -4,14 +4,13 @@ import com.nju.msr.core.model.Actions;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.commons.AdviceAdapter;
 
 /**
  * @Author: jiaqi li
  * @Date: 2018/9
  * @Version 1.0
  */
-class MethodAdapter extends MethodVisitor implements Opcodes {
+class MethodAdapter4 extends MethodVisitor implements Opcodes {
 
     protected String className = null;
     protected int access = -1;
@@ -20,11 +19,8 @@ class MethodAdapter extends MethodVisitor implements Opcodes {
     protected String signature = null;
     protected String[] exceptions = null;
 
-    private Label L0 = new Label();
-    private Label L1 = new Label();
-
-    public MethodAdapter(final MethodVisitor mv, final String className, final int access, final String name,
-                         final String desc, final String signature, final String[] exceptions) {
+    public MethodAdapter4(final MethodVisitor mv, final String className, final int access, final String name,
+                          final String desc, final String signature, final String[] exceptions) {
         //super(ASM5, mv, access, name, desc);
         super(ASM6, mv);
         this.className = className;
@@ -34,25 +30,6 @@ class MethodAdapter extends MethodVisitor implements Opcodes {
         this.signature = signature;
         this.exceptions = exceptions;
     }
-
-    @Override
-    public void visitMaxs(int maxStack, int maxLocals) {
-        mv.visitLabel(L1);
-
-        //mv.visitVarInsn(ASTORE, 10000);
-
-        mv.visitLdcInsn(className);
-        mv.visitLdcInsn(name);
-        mv.visitLdcInsn(desc);
-        mv.visitMethodInsn(INVOKESTATIC, Actions.path,"methodEnd","(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V",false);
-
-
-        //mv.visitVarInsn(ALOAD, 10000);
-        mv.visitInsn(ATHROW);
-        mv.visitTryCatchBlock(L0, L1,
-                L1, "java/lang/Throwable");
-        super.visitMaxs(maxStack+3, maxLocals);
-    }
     @Override
     public void visitCode() {
         super.visitCode();
@@ -61,10 +38,6 @@ class MethodAdapter extends MethodVisitor implements Opcodes {
         mv.visitLdcInsn(desc);
 
         mv.visitMethodInsn(INVOKESTATIC, Actions.path,"methodStart","(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V",false);
-
-
-        // started the try block
-        visitLabel(L0);
 
         /*mv.visitFieldInsn(GETSTATIC, "java/lang/System", "err", "Ljava/io/PrintStream;");
         mv.visitLdcInsn("CALL classname:"+ className+ " access"+access+" name:" + name +" desc"+desc+" singature:"+signature);
@@ -83,17 +56,4 @@ class MethodAdapter extends MethodVisitor implements Opcodes {
         }
         super.visitInsn(opcode);
     }
-
-   /* @Override
-    public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
-        *//* TODO: System.err.println("CALL" + name); *//*
-        *//*mv.visitFieldInsn(GETSTATIC, "java/lang/System", "err", "Ljava/io/PrintStream;");
-        mv.visitLdcInsn("CALL "+opcode+" " + owner +" "+name+" "+desc);
-        mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);*//**//*
-
-        /* do call *//*
-        super.visitMethodInsn(opcode, owner, name, desc, itf);
-
-        *//* TODO: System.err.println("RETURN" + name);  *//*
-    }*/
 }
