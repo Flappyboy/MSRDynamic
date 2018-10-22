@@ -1,8 +1,8 @@
 package com.nju.msr.utils;
 
-import com.nju.msr.core.model.CallChain;
-import com.nju.msr.core.model.CallInfo;
-import com.nju.msr.core.model.MethodRelation;
+import com.nju.msr.core.model.call.CallChain;
+import com.nju.msr.core.model.call.CallInfo;
+import com.nju.msr.core.model.method.MethodRelation;
 
 import java.io.*;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.nju.msr.core.model;
+package com.nju.msr.core.model.method;
 
 import com.nju.msr.core.Constant;
 import com.nju.msr.core.persistence.ServiceManager;

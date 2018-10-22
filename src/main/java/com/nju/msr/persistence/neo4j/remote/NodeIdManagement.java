@@ -1,7 +1,7 @@
 package com.nju.msr.persistence.neo4j.remote;
 
-import com.nju.msr.core.model.Method;
-import com.nju.msr.core.model.MethodRelation;
+import com.nju.msr.core.model.method.Method;
+import com.nju.msr.core.model.method.MethodRelation;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

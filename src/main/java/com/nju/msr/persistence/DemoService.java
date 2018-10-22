@@ -1,10 +1,10 @@
 package com.nju.msr.persistence;
 
 import com.nju.msr.core.Param;
-import com.nju.msr.core.model.CallChain;
-import com.nju.msr.core.model.CallInfo;
-import com.nju.msr.core.model.Method;
-import com.nju.msr.core.model.MethodRelation;
+import com.nju.msr.core.model.call.CallChain;
+import com.nju.msr.core.model.call.CallInfo;
+import com.nju.msr.core.model.method.Method;
+import com.nju.msr.core.model.method.MethodRelation;
 import com.nju.msr.core.persistence.Service;
 import com.nju.msr.core.persistence.ServiceManager;
 import com.nju.msr.utils.FileUtil;

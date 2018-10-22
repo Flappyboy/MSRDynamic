@@ -1,9 +1,7 @@
-package com.nju.msr.core.model;
+package com.nju.msr.core.model.method;
 
 import com.nju.msr.core.Param;
 import com.nju.msr.core.persistence.ServiceManager;
-import com.nju.msr.utils.FileUtil;
-import com.nju.msr.utils.SerializeUtil;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

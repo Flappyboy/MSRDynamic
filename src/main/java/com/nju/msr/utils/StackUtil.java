@@ -1,8 +1,11 @@
 package com.nju.msr.utils;
 
 import com.nju.msr.core.Param;
+import com.nju.msr.core.model.call.CallChain;
+import com.nju.msr.core.model.call.CallInfo;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 /**
  * @Author: jiaqi li
@@ -12,7 +15,7 @@ import java.util.List;
 public class StackUtil {
 
     /**
-     * 将堆栈中的第一个方法和本项目的类过滤调
+     * 将堆栈中的第一个方法和本项目的类过滤
      */
     public static List<StackTraceElement> processedStackTrace(){
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
@@ -36,5 +39,42 @@ public class StackUtil {
                 return false;
         }
         return true;
+    }
+
+    /**
+     * 将当前堆栈中的目标项目的最近方法删除，并同时删除其上相连的非目标项目方法直到找到目标项目方法
+     * @return
+     */
+    public static List<StackTraceElement> getStackWithoutCurrentCall(){
+        List<StackTraceElement> stackTraceElements = processedStackTrace();
+        //去除当前方法
+        stackTraceElements.remove(0);
+        List delList = new ArrayList();
+        Iterator<StackTraceElement> sit = stackTraceElements.iterator();
+        while(sit.hasNext()){
+            StackTraceElement s = sit.next();
+            if (!Param.isUnderPackage(s.getClassName()))
+                //stackTraceElements.remove(s);
+                delList.add(s);
+            else
+                break;
+        }
+        stackTraceElements.removeAll(delList);
+        return stackTraceElements;
+    }
+    /**
+     * 将非目标项目方法全部删除
+     * @return
+     */
+    public static List<StackTraceElement> getStackWithoutOther(){
+        List<StackTraceElement> stackTraceElements = processedStackTrace();
+
+        Iterator<StackTraceElement> sit = stackTraceElements.iterator();
+        while(sit.hasNext()){
+            StackTraceElement s = sit.next();
+            if (!Param.isUnderPackage(s.getClassName()))
+                stackTraceElements.remove(s);
+        }
+        return stackTraceElements;
     }
 }

@@ -1,7 +1,7 @@
 package com.nju.msr.persistence.neo4j.remote;
 
-import com.nju.msr.core.model.Method;
-import com.nju.msr.core.model.MethodRelation;
+import com.nju.msr.core.model.method.Method;
+import com.nju.msr.core.model.method.MethodRelation;
 import com.nju.msr.utils.StringUtil;
 import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.Session;

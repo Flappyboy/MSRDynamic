@@ -1,11 +1,10 @@
 package com.nju.msr.core.persistence;
 
 import com.nju.msr.core.Param;
-import com.nju.msr.core.model.CallChain;
-import com.nju.msr.core.model.CallInfo;
-import com.nju.msr.core.model.Method;
-import com.nju.msr.core.model.MethodRelation;
-import com.nju.msr.utils.StringUtil;
+import com.nju.msr.core.model.call.CallChain;
+import com.nju.msr.core.model.call.CallInfo;
+import com.nju.msr.core.model.method.Method;
+import com.nju.msr.core.model.method.MethodRelation;
 
 import java.util.ArrayList;
 import java.util.List;

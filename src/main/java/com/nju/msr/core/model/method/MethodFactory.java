@@ -1,4 +1,4 @@
-package com.nju.msr.core.model;
+package com.nju.msr.core.model.method;
 
 import java.util.HashMap;
 import java.util.Map;

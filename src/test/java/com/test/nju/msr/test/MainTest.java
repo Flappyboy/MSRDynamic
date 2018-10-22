@@ -1,6 +1,9 @@
 package com.test.nju.msr.test;
 
 import com.test.nju.msr.test.model.TestA;
+import com.test.nju.msr.test.model.TestE;
+import com.test.nju.msr.test.model.TestF;
+
 /**
  * @Author: jiaqi li
  * @Date: 2018/9
@@ -16,7 +19,7 @@ public class MainTest {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         TestA testA = new TestA();
         testA.func1();
         testA.func2();
@@ -29,5 +32,31 @@ public class MainTest {
         }
         testA.func5();
         testA.func6();
+        try {
+            TestF testF = new TestF();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        /*try {
+            TestE testE = new TestF();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+        //TestE test = new TestF();
+        //test.fun();
+       /* try {
+            TestF testF = new TestF();
+            testF.ttt();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+        //TestE testE = new TestF();
+        /*TestA testA = null;
+        try {
+            testA = new TestA();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        testA.func5();*/
     }
 }

@@ -20,17 +20,19 @@ public class AopAgentTransformer implements ClassFileTransformer{
     public byte[] transform(ClassLoader loader, String className,
                             Class<?> classBeingRedefined, ProtectionDomain protectionDomain,
                             byte[] classfileBuffer) throws IllegalClassFormatException {
-        byte[] transformed = null;
+
 
         /*if(!Param.isUnderPackage(className)&&!className.startsWith("org/hsqldb")){
             return classfileBuffer;
         }*/
+        //System.out.println("all  " + className);
         if(!Param.isUnderPackage(className)){
             return classfileBuffer;
         }
 
         System.out.println("Transforming " + className);
 
+        byte[] transformed = null;
         try {
             ClassReader cr = new ClassReader(new java.io.ByteArrayInputStream(classfileBuffer));
             ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);

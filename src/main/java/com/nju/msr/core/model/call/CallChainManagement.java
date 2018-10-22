@@ -1,14 +1,9 @@
-package com.nju.msr.core.model;
+package com.nju.msr.core.model.call;
 
-import com.nju.msr.core.Param;
-import com.nju.msr.core.persistence.Service;
+import com.nju.msr.core.model.method.Method;
 import com.nju.msr.core.persistence.ServiceManager;
-import com.nju.msr.utils.FileUtil;
-import com.nju.msr.utils.SerializeUtil;
 import com.nju.msr.utils.StackUtil;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,6 +20,9 @@ public class CallChainManagement {
 
     private static Map<Long, CallChain> callChainMap = new ConcurrentHashMap<>();
 
+    //protected static Strategy strategy = new BaseStrategy();
+    protected static Strategy strategy = new BaseStrategyWithCurrentCall();
+
     private CallChainManagement() {
         //startCheckThread();
     }
@@ -36,7 +34,7 @@ public class CallChainManagement {
     private CallChain getCurrentCallChain() {
         CallChain callChain = callChainMap.get(Thread.currentThread().getId());
         if (callChain == null) {
-            callChain = new CallChain();
+            callChain = new CallChainStack();
             callChainMap.put(Thread.currentThread().getId(),callChain);
         }
         return callChain;
@@ -44,35 +42,51 @@ public class CallChainManagement {
 
     public void methodStart(Method method){
 
-        boolean isRootMehtod = StackUtil.isRootMethod();
-        if (isRootMehtod && callChainMap.get(Thread.currentThread().getId())!=null){
-            callChainEnd();
+        //boolean isRootMehtod = StackUtil.isRootMethod();
+        boolean existCallChain = callChainMap.get(Thread.currentThread().getId())!=null;
+
+
+        if (existCallChain){
+            CallChain callChain = getCurrentCallChain();
+
+            if (callChain.getPreEndTime()!=null){
+                //System.out.println(System.currentTimeMillis()-callChain.getPreEndTime());
+                if ((System.currentTimeMillis()-callChain.getPreEndTime())>100)
+                    callChainEnd();
+                callChain.setPreEndTime(null);
+            }
         }
+        /*if(isRootMehtod && existCallChain)
+            callChainEnd();*/
 
         getCurrentCallChain().methodStart(method);
     }
 
     /**
-     * 由于无法可靠地保证获得方法结束信息，所以当前这个方法在方法结束时并不一定会调用，
-     * 目前通过methodStart方法开头检查和另开线程检查线程存活来解决
+     * 当方法结束时，会调用该方法，但对于构造函数，若调用父类构造器抛出异常退出的情况，无法调用该函数
+     * @param method
      */
     public void methodEnd(Method method){
         //TODO 处理method相关内容
 
         CallChain callChain = getCurrentCallChain();
-        //save(callChain,Thread.currentThread().getId());
 
         callChain.methodEnd(method);
 
         //判断调用链是否结束
         if (StackUtil.isRootMethod())
-            callChainEnd();
+            callChainPreEnd();
+    }
+
+    public void callChainPreEnd(){
+        getCurrentCallChain().setPreEndTime(System.currentTimeMillis());
     }
     public void callChainEnd(){
         callChainEnd(Thread.currentThread().getId());
     }
     public void callChainEnd(long key){
         ServiceManager.CallChainFinish(callChainMap.get(key));
+        getCurrentCallChain().setThreadCallChain(new Stack<>());
         callChainMap.remove(key);
     }
 

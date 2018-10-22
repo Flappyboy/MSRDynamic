@@ -1,6 +1,6 @@
 package com.nju.msr.core.asm;
 
-import com.nju.msr.core.model.MethodFactory;
+import com.nju.msr.core.model.method.MethodFactory;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -45,6 +45,7 @@ public class ClassAdapter extends ClassVisitor implements Opcodes {
         if (!isInterface && mv != null) {
             mv = new MethodAdapter3(mv, owner, access, name, desc, signature, exceptions);
             //mv = new MethodAdapter2(mv, owner, access, name, desc, signature, exceptions);
+            //mv = new MethodAdapter5(mv, owner, access, name, desc, signature, exceptions);
             MethodFactory.getInstance().getMethod(owner,name,desc);
             //mv = new MethodAdapter4(mv, owner, access, name, desc, signature, exceptions);
         }

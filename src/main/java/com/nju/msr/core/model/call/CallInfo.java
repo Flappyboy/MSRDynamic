@@ -1,5 +1,8 @@
-package com.nju.msr.core.model;
+package com.nju.msr.core.model.call;
 
+import com.nju.msr.core.model.method.Method;
+import com.nju.msr.core.model.method.MethodRelation;
+import com.nju.msr.core.model.method.MethodRelationManagement;
 import com.nju.msr.core.persistence.ServiceManager;
 
 import java.io.Serializable;

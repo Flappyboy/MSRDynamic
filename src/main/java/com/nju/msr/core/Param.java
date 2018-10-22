@@ -17,6 +17,7 @@ public class Param {
     private Param() {}
 
     public static String[] packageName = {};
+    public static String[] packageNameExclude = {};
 
     public static long MethodRelationSaveThreadSleepTime;
     public static long MethodRelationSaveIntervalTime;
@@ -28,6 +29,7 @@ public class Param {
 
     private static void generateParamsFromProperties(Properties properties){
         Param.packageName = properties.getProperty("packageName").replaceAll("\\.","/").split(Constant.ParamsPackageNameSplitSign);
+        Param.packageNameExclude = properties.getProperty("packageNameExclude").replaceAll("\\.","/").split(Constant.ParamsPackageNameSplitSign);
 
         MethodRelationSaveThreadSleepTime = Long.parseLong(properties.getProperty("MethodRelationSaveThreadSleepTime","1000"));
         MethodRelationSaveIntervalTime = Long.parseLong(properties.getProperty("MethodRelationSaveIntervalTime","10000"));
@@ -47,6 +49,14 @@ public class Param {
             if (name.startsWith(s)){
                 flag=true;
                 break;
+            }
+        }
+        if (flag){
+            for (String s: Param.packageNameExclude){
+                if (name.startsWith(s)){
+                    flag=false;
+                    break;
+                }
             }
         }
         return flag;
